@@ -94,6 +94,7 @@ bool Program::FullPrepare() {
             MakeLibrary() && OpenLib());
 }
 
+/*
 int main() {
     Program p("sqrt.cpp");
     if (p.FullPrepare()) {
@@ -106,3 +107,4 @@ int main() {
 
     return 0;
 }
+*/
