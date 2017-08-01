@@ -1,5 +1,5 @@
-#include "program.h"
-#include "utils.h"
+#include "include/program.h"
+#include "include/utils.h"
 #include <cstdlib>
 #include <iostream>
 #include <dlfcn.h>
@@ -93,18 +93,3 @@ bool Program::FullPrepare() {
     return (Compile() && Externify() && RenameMain() &&
             MakeLibrary() && OpenLib());
 }
-
-/*
-int main() {
-    Program p("sqrt.cpp");
-    if (p.FullPrepare()) {
-        typedef double (*sqrt)(double);
-        sqrt fn = (sqrt) p.GetFunction("sqrt");
-        cout << "sqrt(9): " << (*fn)(9) << endl;
-    } else {
-        cout << "Did not pass full prepare" << endl;
-    }
-
-    return 0;
-}
-*/

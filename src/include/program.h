@@ -1,5 +1,5 @@
-#ifndef PROGRAM_H_
-#define PROGRAM_H_
+#ifndef SRC_INCLUDE_PROGRAM_H_
+#define SRC_INCLUDE_PROGRAM_H_
 
 #include <string>
 
@@ -27,5 +27,5 @@ class Program {
         void* lib_handle_;
 };
 
-#endif  // PROGRAM_H_
+#endif  // SRC_INCLUDE_PROGRAM_H_
 

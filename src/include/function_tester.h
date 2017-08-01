@@ -17,34 +17,16 @@ class FunctionTester {
     typedef retType (*func_ptr)(Args...);
 
     public:
-        FunctionTester(func_ptr f) {
-            func_ = f;
-        }
-
-        virtual void AddTest(retType ans, Args... inputs) {
-            answers_.push_back(ans);
-            input_argsets_.push_back(tuple<Args...>(inputs...));
-        }
-        virtual void RunAllTests() {
-            for (int i = 0; i < input_argsets_.size(); i++)
-                RunTest(i);
-        }
-        virtual bool RunTest(int test_num) {
-            return answers_[test_num] ==
-                callFunc(test_num, typename gens<sizeof...(Args)>::type());
-        }
+        FunctionTester(func_ptr f);
+        virtual void AddTest(retType ans, Args... inputs);
+        virtual void RunAllTests();
+        virtual bool RunTest(int test_num);
 
         template<int ...S>
-        retType callFunc(int test_num, seq<S...>) {
-            return func_(get<S>(input_argsets_[test_num]) ...);
-        }
+        retType callFunc(int test_num, seq<S...>);
 
-        void SetFunction(func_ptr f) {
-            func_ = f;
-        }
-        func_ptr GetFunction() {
-            return func_;
-        }
+        void SetFunction(func_ptr f) { func_ = f; }
+        func_ptr GetFunction() { return func_; }
 
 
     protected:
