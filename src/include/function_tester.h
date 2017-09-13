@@ -5,6 +5,9 @@
 #include <tuple>
 #include <vector>
 #include <utility>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -48,29 +51,43 @@ class FunctionTester : public Tester {
         FunctionTester(string name, func_ptr f) : Tester(name) {
             func_ = f;
         }
-        virtual void AddTest(string test_name, retType ans, Args... inputs) {
+        virtual void AddTest(string test_name, retType ans,
+                Args... inputs, Args... out_ans) {
             answers_.push_back(ans);
             test_names_.push_back(test_name);
             test_results_.push_back(-1);
             input_argsets_.push_back(tuple<Args...>(inputs...));
+            argument_answers_.push_back(tuple<Args...>(out_ans...));
         }
         virtual void RunAllTests() {
             for (int i = 0; i < input_argsets_.size(); i++)
                 RunTest(i);
         }
-        virtual bool RunTest(int test_num) {
-            bool ret = answers_[test_num] ==
-                callFunc(test_num, typename gens<sizeof...(Args)>::type());
-            if (ret) {
-                test_results_[test_num] = 0;
+        virtual bool RunTest(int test) {
+            pid_t pid;
+            if ((pid = fork()) == 0) {
+                bool ret = answers_[test] ==
+                    callFunc(test, typename gens<sizeof...(Args)>::type()) &&
+                    input_argsets_[test] == argument_answers_[test];
+                if (ret) {
+                    exit(0);
+                } else {
+                    exit(1);
+                }
             } else {
-                test_results_[test_num] = 1;
+                int status;
+                wait(&status);
+                if (status == 0 || status == 1) {
+                    test_results_[test] = status;
+                } else {
+                    test_results_[test] = 2;
+                }
             }
-            return ret;
         }
 
         virtual void PrintTestInfo(ostream& out, int test) {
             out << "\tFunction Inputs: " << input_argsets_[test] << endl;
+            out << "\tFunction Outputs: " << input_argsets_[test] << endl;
             out << "\tExpected Return: " << answers_[test] << endl;
             Tester::PrintTestInfo(out, test);
         }
@@ -86,6 +103,7 @@ class FunctionTester : public Tester {
     protected:
         retType (*func_)(Args...);
         vector<tuple<Args...>> input_argsets_;
+        vector<tuple<Args...>> argument_answers_;
         vector<retType> answers_;
         vector<retType> return_vals_;
 };

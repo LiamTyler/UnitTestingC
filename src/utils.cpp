@@ -25,7 +25,7 @@ bool rename_main(string& filename) {
     regex main("(.*)int main\\(.*\\)(.*)");
     while(getline(in, in_line)) {
         if (regex_match(in_line, sm, main)) {
-            out << sm[1] << "int student_main(int argc, char* argv[])" << sm[2] << endl;
+            out << sm[1] << "int student_main(int argc, char** argv)" << sm[2] << endl;
         } else {
             out << in_line << endl;
         }

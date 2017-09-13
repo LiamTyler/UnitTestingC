@@ -39,7 +39,7 @@ void Tester::GetSummary(ostream& out) {
         out << "Test Case #" << i << " : \"" << test_names_[i] << "\"" << endl;
         out << dash << endl;
         PrintTestInfo(out, i);
-        sum += (int) test_results_[i] == 1;
+        sum += (int) test_results_[i] == 0;
     }
     out << endl;
     out << "Final Summary: " << sum << "/" << test_results_.size() << " Passed" << endl;
